@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Farmacias Carol — Orbital Architecture</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Inter', sans-serif; background: radial-gradient(ellipse at center, #0e1628 0%, #050811 100%); color: #e0e0e0; min-height: 100vh; overflow-x: auto; }
+
+  .header { text-align: center; padding: 30px 20px 10px; }
+  .header h1 { font-size: 28px; font-weight: 700; color: #fff; letter-spacing: -0.5px; }
+  .header h1 .green { color: #1B9E3F; }
+  .header h1 .red { color: #E30613; }
+  .header h1 span.tag { color: #7B6FF0; }
+  .header p { font-size: 13px; color: #6b7280; margin-top: 6px; }
+
+  .canvas { position: relative; width: 1700px; height: 1700px; margin: 20px auto 80px; }
+
+  svg.orbits { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+  svg.orbits .ring { fill: none; stroke-width: 1.2; stroke-dasharray: 6 8; transform-origin: 850px 850px; }
+  svg.orbits .ring-1 { stroke: rgba(123,111,240,0.25); animation: spin 60s linear infinite; }
+  svg.orbits .ring-2 { stroke: rgba(180,60,100,0.22); animation: spin 90s linear infinite reverse; }
+  svg.orbits .ring-3 { stroke: rgba(15,110,86,0.22); animation: spin 130s linear infinite; }
+  svg.orbits .ring-4 { stroke: rgba(153,60,29,0.22); animation: spin 200s linear infinite reverse; }
+  @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+  svg.connections { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
+  svg.connections line, svg.connections path { stroke-width: 1.5; fill: none; opacity: 0.45; }
+  svg.connections .glow { stroke-width: 4; opacity: 0.12; filter: blur(3px); }
+
+  .node { position: absolute; border-radius: 14px; padding: 12px 14px; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s; z-index: 3; border: 1px solid rgba(255,255,255,0.08); backdrop-filter: blur(10px); background: rgba(10,14,26,0.7); }
+  .node:hover { transform: translateY(-3px) scale(1.03); box-shadow: 0 12px 36px rgba(0,0,0,0.5); border-color: rgba(255,255,255,0.25); z-index: 20; }
+  .node .icon { width: 32px; height: 32px; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; margin-bottom: 6px; color: #fff; }
+  .node .name { font-size: 11.5px; font-weight: 600; color: #fff; margin-bottom: 2px; line-height: 1.25; }
+  .node .desc { font-size: 9.5px; color: rgba(255,255,255,0.5); line-height: 1.35; }
+  .node .badge { position: absolute; top: -8px; right: 10px; font-size: 9px; padding: 2px 7px; border-radius: 10px; font-weight: 600; letter-spacing: 0.3px; }
+
+  /* ERP Center */
+  .erp-center { width: 280px; height: 150px; background: radial-gradient(ellipse at center, rgba(24,95,165,0.5) 0%, rgba(24,95,165,0.1) 100%); border-color: rgba(24,95,165,0.7); animation: erp-pulse 4s ease-in-out infinite; }
+  .erp-center .icon { background: #185FA5; box-shadow: 0 0 20px rgba(24,95,165,0.6); }
+  .erp-center .badge { background: #185FA5; color: #fff; }
+  .erp-center .name { font-size: 14px; }
+  .erp-center .desc { font-size: 10.5px; }
+  @keyframes erp-pulse {
+    0%, 100% { box-shadow: 0 0 50px rgba(24,95,165,0.35), 0 0 100px rgba(24,95,165,0.18); }
+    50% { box-shadow: 0 0 80px rgba(24,95,165,0.55), 0 0 160px rgba(24,95,165,0.28); }
+  }
+
+  /* Orbit Labs (software ring + most ops) */
+  .orbit { background: rgba(123,111,240,0.1); border-color: rgba(123,111,240,0.4); }
+  .orbit .icon { background: #534AB7; box-shadow: 0 0 12px rgba(83,74,183,0.5); }
+  .orbit .badge { background: #534AB7; color: #fff; }
+
+  /* Hardware */
+  .hardware { background: rgba(15,110,86,0.1); border-color: rgba(15,110,86,0.4); }
+  .hardware .icon { background: #0F6E56; box-shadow: 0 0 12px rgba(15,110,86,0.5); }
+
+  /* Externos */
+  .external { background: rgba(153,60,29,0.1); border-color: rgba(153,60,29,0.4); }
+  .external .icon { background: #993C1D; box-shadow: 0 0 12px rgba(153,60,29,0.5); }
+
+  /* Operaciones / Monitoreo */
+  .ops { background: rgba(180,60,100,0.1); border-color: rgba(180,60,100,0.4); }
+  .ops .icon { background: #B43C64; box-shadow: 0 0 12px rgba(180,60,100,0.5); }
+  .ops .badge { background: #B43C64; color: #fff; }
+
+  /* Cadena de Frío */
+  .cold { background: rgba(40,150,180,0.1); border-color: rgba(40,150,180,0.5); }
+  .cold .icon { background: #2896B4; box-shadow: 0 0 12px rgba(40,150,180,0.5); }
+  .cold .badge { background: #2896B4; color: #fff; }
+
+  /* Ring labels */
+  .ring-label { position: absolute; font-size: 10px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.25); z-index: 2; padding: 4px 10px; background: rgba(10,14,26,0.7); border-radius: 4px; }
+
+  .legend { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); display: flex; gap: 20px; background: rgba(10,14,26,0.9); backdrop-filter: blur(10px); padding: 10px 24px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.08); z-index: 100; flex-wrap: wrap; justify-content: center; }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: #9ca3af; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 3px; }
+
+  .tooltip { display: none; position: absolute; background: rgba(20,24,40,0.96); border: 1px solid rgba(255,255,255,0.18); border-radius: 12px; padding: 16px; max-width: 360px; z-index: 200; backdrop-filter: blur(12px); }
+  .tooltip.show { display: block; }
+  .tooltip h3 { font-size: 13px; font-weight: 600; color: #fff; margin-bottom: 8px; }
+  .tooltip .flow { font-size: 11px; color: rgba(255,255,255,0.6); line-height: 1.5; padding: 5px 0; border-bottom: 1px solid rgba(255,255,255,0.06); }
+  .tooltip .flow:last-child { border: none; }
+  .tooltip .flow b { color: #7B6FF0; font-weight: 500; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1><span class="green">Ca</span><span class="red">r</span><span class="green">ol</span> Farmacia — <span class="tag">orbital architecture</span></h1>
+  <p>ERP corporativo en el centro. Cada órbita es una capa: software · operaciones · hardware · servicios externos.</p>
+</div>
+
+<div class="canvas" id="canvas">
+
+  <!-- Animated orbital rings -->
+  <svg class="orbits" viewBox="0 0 1700 1700">
+    <circle class="ring ring-1" cx="850" cy="850" r="280"/>
+    <circle class="ring ring-2" cx="850" cy="850" r="440"/>
+    <circle class="ring ring-3" cx="850" cy="850" r="580"/>
+    <circle class="ring ring-4" cx="850" cy="850" r="730"/>
+  </svg>
+
+  <!-- Connection lines -->
+  <svg class="connections" viewBox="0 0 1700 1700">
+    <defs>
+      <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+        <path d="M2 2L8 5L2 8" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round"/>
+      </marker>
+    </defs>
+
+    <!-- ERP → Software ring (4 solid purple radial spokes) -->
+    <line x1="850" y1="850" x2="1048" y2="652" stroke="#7B6FF0"/>
+    <line x1="850" y1="850" x2="1048" y2="652" stroke="#7B6FF0" class="glow"/>
+    <line x1="850" y1="850" x2="1048" y2="1048" stroke="#7B6FF0"/>
+    <line x1="850" y1="850" x2="1048" y2="1048" stroke="#7B6FF0" class="glow"/>
+    <line x1="850" y1="850" x2="652" y2="1048" stroke="#7B6FF0"/>
+    <line x1="850" y1="850" x2="652" y2="1048" stroke="#7B6FF0" class="glow"/>
+    <line x1="850" y1="850" x2="652" y2="652" stroke="#7B6FF0"/>
+    <line x1="850" y1="850" x2="652" y2="652" stroke="#7B6FF0" class="glow"/>
+
+    <!-- ERP → Ops ring (4 dashed) -->
+    <line x1="850" y1="850" x2="850" y2="410" stroke="#7B6FF0" stroke-dasharray="5 5" marker-end="url(#arr)"/>
+    <line x1="850" y1="850" x2="1290" y2="850" stroke="#7B6FF0" stroke-dasharray="5 5" marker-end="url(#arr)"/>
+    <line x1="850" y1="850" x2="850" y2="1290" stroke="#B43C64" stroke-dasharray="5 5" marker-end="url(#arr)"/>
+    <line x1="850" y1="850" x2="410" y2="850" stroke="#2896B4" stroke-dasharray="5 5" marker-end="url(#arr)"/>
+
+    <!-- ERP → Hardware ring (4 dashed green, passing through ops layer) -->
+    <line x1="850" y1="850" x2="1260" y2="440" stroke="#0F6E56" stroke-dasharray="3 6" opacity="0.3"/>
+    <line x1="850" y1="850" x2="1260" y2="1260" stroke="#0F6E56" stroke-dasharray="3 6" opacity="0.3"/>
+    <line x1="850" y1="850" x2="440" y2="1260" stroke="#0F6E56" stroke-dasharray="3 6" opacity="0.3"/>
+    <line x1="850" y1="850" x2="440" y2="440" stroke="#0F6E56" stroke-dasharray="3 6" opacity="0.3"/>
+
+    <!-- ERP → Externos (3 dashed) -->
+    <line x1="850" y1="850" x2="218" y2="485" stroke="#993C1D" stroke-dasharray="6 4" marker-end="url(#arr)" opacity="0.5"/>
+    <line x1="850" y1="850" x2="1482" y2="485" stroke="#993C1D" stroke-dasharray="6 4" marker-end="url(#arr)" opacity="0.5"/>
+    <line x1="850" y1="850" x2="850" y2="1580" stroke="#993C1D" stroke-dasharray="6 4" marker-end="url(#arr)" opacity="0.5"/>
+
+    <!-- Cross-ring same-quadrant connections (POS → Caja, App → Beauty, PT → Drive, Fid → Rider) -->
+    <line x1="1048" y1="652" x2="1260" y2="440" stroke="#0F6E56" marker-end="url(#arr)"/>
+    <line x1="1048" y1="1048" x2="1260" y2="1260" stroke="#0F6E56" marker-end="url(#arr)"/>
+    <line x1="652" y1="1048" x2="440" y2="1260" stroke="#0F6E56" marker-end="url(#arr)"/>
+    <line x1="652" y1="652" x2="440" y2="440" stroke="#0F6E56" marker-end="url(#arr)"/>
+
+    <!-- Cadena de Frío → Rider (cyan) -->
+    <path d="M 410 850 Q 350 600 440 440" stroke="#2896B4" stroke-dasharray="4 4" fill="none" marker-end="url(#arr)" opacity="0.5"/>
+
+    <!-- Cadena de Frío → CD (cyan, top arc) -->
+    <path d="M 410 850 Q 850 700 1290 850" stroke="#2896B4" stroke-dasharray="4 4" fill="none" marker-end="url(#arr)" opacity="0.4"/>
+
+    <!-- e-Rx → POS (short) -->
+    <line x1="850" y1="410" x2="1048" y2="652" stroke="#7B6FF0" stroke-dasharray="3 3" marker-end="url(#arr)" opacity="0.5"/>
+
+    <!-- CD → Caja Mostrador (transferencias) -->
+    <line x1="1290" y1="850" x2="1260" y2="440" stroke="#0F6E56" stroke-dasharray="4 4" marker-end="url(#arr)" opacity="0.4"/>
+
+    <!-- Fidelización ↔ POS (puntos curve through center top) -->
+    <path d="M 652 652 Q 850 750 1048 652" stroke="#7B6FF0" stroke-dasharray="4 4" fill="none" marker-end="url(#arr)" opacity="0.4"/>
+  </svg>
+
+  <!-- Ring labels -->
+  <div class="ring-label" style="top:570px;left:850px;">Software</div>
+  <div class="ring-label" style="top:410px;left:850px;">Operaciones</div>
+  <div class="ring-label" style="top:270px;left:850px;">Hardware</div>
+  <div class="ring-label" style="top:120px;left:850px;">Servicios externos</div>
+
+  <!-- ═══════════ ERP CENTER ═══════════ -->
+  <div class="node erp-center" style="top:775px;left:710px;" onclick="tip(this,'erp')">
+    <div class="badge">REST / OData</div>
+    <div class="icon">ERP</div>
+    <div class="name">ERP Corporativo (Dynamics)</div>
+    <div class="desc">Fuente única de verdad. Maestro de artículos, precios, lotes con vencimiento, clientes, contabilidad, OC, facturación.</div>
+  </div>
+
+  <!-- ═══════════ RING 1 — SOFTWARE (R=280, diagonals) ═══════════ -->
+  <!-- POS at 315° (NE) -->
+  <div class="node orbit" style="top:602px;left:958px;width:180px;" onclick="tip(this,'pos')">
+    <div class="badge">Core</div>
+    <div class="icon">POS</div>
+    <div class="name">POS Farmacia multi-modo</div>
+    <div class="desc">Mostrador, OTC, controlados, beauty, drive-thru. e-Rx, e-CF, fidelización, offline.</div>
+  </div>
+
+  <!-- Carol App at 45° (SE) -->
+  <div class="node orbit" style="top:998px;left:958px;width:180px;" onclick="tip(this,'app')">
+    <div class="badge">Digital</div>
+    <div class="icon">APP</div>
+    <div class="name">Carol App + Web</div>
+    <div class="desc">App móvil + farmaciascarol.com + WhatsApp. Catálogo, recetas digitales, fidelización.</div>
+  </div>
+
+  <!-- PharmaTrack at 135° (SW) -->
+  <div class="node orbit" style="top:998px;left:562px;width:180px;" onclick="tip(this,'pt')">
+    <div class="badge">Inventario</div>
+    <div class="icon">PT</div>
+    <div class="name">PharmaTrack</div>
+    <div class="desc">Lotes con FEFO, vencimientos, recepciones, transferencias, controlados.</div>
+  </div>
+
+  <!-- Fidelización at 225° (NW) -->
+  <div class="node orbit" style="top:602px;left:562px;width:180px;" onclick="tip(this,'fid')">
+    <div class="badge">Cliente B2C</div>
+    <div class="icon">FID</div>
+    <div class="name">Fidelización</div>
+    <div class="desc">Programa de puntos, niveles, promos segmentadas, CRM, cross-sell.</div>
+  </div>
+
+  <!-- ═══════════ RING 2 — OPERACIONES (R=440, cardinals) ═══════════ -->
+  <!-- e-Rx at 270° (top) -->
+  <div class="node orbit" style="top:360px;left:760px;width:180px;" onclick="tip(this,'erx')">
+    <div class="badge">Receta digital</div>
+    <div class="icon">eRx</div>
+    <div class="name">Recetas Electrónicas</div>
+    <div class="desc">FHIR/PDF. Validación farmacéutica, control duplicados, cola al POS.</div>
+  </div>
+
+  <!-- CD at 0° (right) -->
+  <div class="node orbit" style="top:800px;left:1200px;width:180px;" onclick="tip(this,'cd')">
+    <div class="badge">Logística</div>
+    <div class="icon">CD</div>
+    <div class="name">Centro de Distribución</div>
+    <div class="desc">Recepción de laboratorios, picking, packing, transferencias a sucursales.</div>
+  </div>
+
+  <!-- Monitoreo at 90° (bottom) -->
+  <div class="node ops" style="top:1240px;left:760px;width:180px;" onclick="tip(this,'monitoreo')">
+    <div class="badge">Auditoría</div>
+    <div class="icon">MON</div>
+    <div class="name">Monitoreo</div>
+    <div class="desc">Transacciones rechazadas, recetas no procesadas, dashboard centralizado.</div>
+  </div>
+
+  <!-- Cadena Frío at 180° (left) -->
+  <div class="node cold" style="top:800px;left:320px;width:180px;" onclick="tip(this,'frio')">
+    <div class="badge">2-8°C</div>
+    <div class="icon">CF</div>
+    <div class="name">Cadena de Frío</div>
+    <div class="desc">Sensores IoT 24/7. Alertas en tiempo real para insulina, vacunas, biológicos.</div>
+  </div>
+
+  <!-- ═══════════ RING 3 — HARDWARE (R=580, diagonals) ═══════════ -->
+  <!-- Caja at 315° (NE) -->
+  <div class="node hardware" style="top:390px;left:1170px;width:180px;" onclick="tip(this,'mostrador')">
+    <div class="icon">CJ</div>
+    <div class="name">Caja Mostrador</div>
+    <div class="desc">Terminal POS + impresora ticket + lector + cajón + pinpad. Múltiples por sucursal.</div>
+  </div>
+
+  <!-- Beauty at 45° (SE) -->
+  <div class="node hardware" style="top:1210px;left:1170px;width:180px;" onclick="tip(this,'beauty')">
+    <div class="icon">TB</div>
+    <div class="name">Tablet Beauty / Dermo</div>
+    <div class="desc">Tablet portátil para asesoría en piso. Cobro en sitio, recomendador.</div>
+  </div>
+
+  <!-- Drive-thru at 135° (SW) -->
+  <div class="node hardware" style="top:1210px;left:350px;width:180px;" onclick="tip(this,'drive')">
+    <div class="icon">DT</div>
+    <div class="name">Drive-thru / Express</div>
+    <div class="desc">Terminal con dual screen para entrega rápida en ventana exterior.</div>
+  </div>
+
+  <!-- Rider at 225° (NW) -->
+  <div class="node hardware" style="top:390px;left:350px;width:180px;" onclick="tip(this,'rider')">
+    <div class="icon">RD</div>
+    <div class="name">Rider / Delivery</div>
+    <div class="desc">Móvil del rider + caja térmica. Firma digital, prueba foto, geolocalización.</div>
+  </div>
+
+  <!-- ═══════════ RING 4 — EXTERNOS (R=730, 90° / 210° / 330°) ═══════════ -->
+  <!-- e-CF at 210° (upper-left far) -->
+  <div class="node external" style="top:430px;left:118px;width:200px;" onclick="tip(this,'ecf')">
+    <div class="icon">e-CF</div>
+    <div class="name">Proveedor e-CF / DGII</div>
+    <div class="desc">Facturación electrónica. XML X.509, TrackID, modo offline 72h, reportes 606/607.</div>
+  </div>
+
+  <!-- Pagos at 330° (upper-right far) -->
+  <div class="node external" style="top:430px;left:1382px;width:200px;" onclick="tip(this,'pagos')">
+    <div class="icon">$</div>
+    <div class="name">Procesador de Pagos</div>
+    <div class="desc">Azul / CardNet. Pinpad TCP/IP. Conciliación automática diaria.</div>
+  </div>
+
+  <!-- Cloud at 90° (bottom far) -->
+  <div class="node external" style="top:1525px;left:750px;width:200px;" onclick="tip(this,'cloud')">
+    <div class="icon">☁</div>
+    <div class="name">Cloud Hosting ERP</div>
+    <div class="desc">Hosting del ERP en la nube. VPN/HTTPS, backup, sitio DR.</div>
+  </div>
+</div>
+
+<div class="tooltip" id="tooltip"></div>
+
+<div class="legend">
+  <div class="legend-item"><div class="legend-dot" style="background:#185FA5"></div>ERP</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#534AB7"></div>Software</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#B43C64"></div>Monitoreo</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#2896B4"></div>Cadena de frío</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#0F6E56"></div>Hardware</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#993C1D"></div>Externos</div>
+  <div class="legend-item" style="color:#555;">— Sólida = sync directa</div>
+  <div class="legend-item" style="color:#555;">- - Punteada = async/batch</div>
+</div>
+
+<script>
+const tips = {
+  erp: { t: 'ERP Corporativo — centro del ecosistema', f: [
+    '<b>→ POS:</b> Maestro de artículos, precios, listas de precios, clientes, lotes con vencimiento',
+    '<b>→ PharmaTrack:</b> Lotes, FEFO, warehouses por sucursal, controlados',
+    '<b>→ Carol App:</b> Mismo catálogo del ERP, mismo stock por warehouse',
+    '<b>→ e-Rx:</b> Catálogo de medicamentos válidos, equivalencias, principios activos',
+    '<b>→ CD:</b> Órdenes de compra a laboratorios, transferencias a sucursales',
+    '<b>→ Fidelización:</b> Maestro de clientes, historial de compra para segmentación',
+    '<b>← POS:</b> Facturas, pagos, notas de crédito, devoluciones',
+    '<b>← PharmaTrack:</b> Recepciones, transferencias, cycle counts, ajustes',
+    '<b>← Cadena de Frío:</b> Eventos de excursión térmica, ajustes por mermas',
+    '<b>Monitoreo:</b> Transacciones rechazadas o no procesadas → alerta centralizada',
+  ]},
+  pos: { t: 'POS Farmacia — modos de operación', f: [
+    '<b>Modo Mostrador:</b> Receta → valida con e-Rx → cobra → e-CF → descuenta inventario por lote',
+    '<b>Modo OTC:</b> Escaneo libre, sin receta. Pago directo (efectivo, tarjeta, app, puntos)',
+    '<b>Modo Controlados:</b> Lista I-VI. Firma digital, registro de cédula, bitácora regulatoria',
+    '<b>Modo Beauty/Dermo:</b> Catálogo dermo + cosmética. Recomendador, fidelización',
+    '<b>Modo Drive-thru:</b> Pre-validación remota → recogida sin bajar del carro',
+    '<b>Modo Express/Delivery:</b> Pedido por app → picking → entrega rider con prueba digital',
+    '<b>Fidelización integrada:</b> Identifica cliente → acumula puntos → redime → aplica promos',
+    '<b>Lectura medicamento:</b> Lector decodifica → POS valida vs ERP → cobra y descuenta lote exacto',
+    '<b>Offline:</b> Base local → sigue vendiendo → cola sync → al reconectar envía al ERP',
+  ]},
+  app: { t: 'Carol App + Web', f: [
+    '<b>Catálogo:</b> Mismo maestro del ERP. Producto en sucursal = producto en app',
+    '<b>Stock:</b> Inventario del ERP es fuente única, por sucursal',
+    '<b>Receta digital:</b> Cliente sube foto o recibe e-Rx → validación → cola en sucursal',
+    '<b>Recordatorios:</b> Push para tomar medicación, refill automático',
+    '<b>Tarjeta de fidelización digital:</b> Puntos visibles en app, redención con QR',
+    '<b>WhatsApp:</b> Pedido por chat → bot → confirma → pago → entrega',
+    '<b>Geolocalización:</b> Sucursal más cercana, drive-thru disponible',
+  ]},
+  pt: { t: 'PharmaTrack — inventario y trazabilidad', f: [
+    '<b>Recepciones:</b> Llegada de laboratorio → escaneo → valida lote+venc → entrada al ERP',
+    '<b>FEFO automático:</b> POS siempre descuenta el lote con vencimiento más próximo',
+    '<b>Vencimientos:</b> Alertas a 90/60/30 días. Bloqueo automático al vencer',
+    '<b>Controlados:</b> Lista I-VI. Bitácora completa para reporte regulatorio',
+    '<b>Transferencias:</b> CD → sucursal con cadena de frío validada',
+    '<b>Cycle counts:</b> Conteo físico desde móvil → comparación ERP → ajuste con autorización',
+    '<b>Cadena de frío:</b> Refrigerados con monitoreo continuo. Excursión térmica → bloqueo',
+  ]},
+  fid: { t: 'Plataforma de Fidelización — cliente B2C', f: [
+    '<b>Programa de puntos:</b> Acumulación por compra. Tasa configurable por categoría',
+    '<b>Niveles:</b> Bronce / Plata / Oro / Premium según consumo anual. Beneficios crecientes',
+    '<b>Redención:</b> En mostrador o app. Descuento, producto o categoría específica',
+    '<b>Promociones segmentadas:</b> Por historial, edad, condición crónica, categoría favorita',
+    '<b>Cumpleaños:</b> Trigger automático con cupón especial',
+    '<b>Recordatorio refill:</b> Cliente compra crónico → sugiere recompra antes que termine',
+    '<b>CRM:</b> Historial completo, comportamiento, LTV, churn risk',
+    '<b>Cross-sell:</b> Sugerencias en caja basadas en perfil',
+    '<b>Tarjeta digital:</b> En la Carol App, QR escaneable en mostrador',
+  ]},
+  erx: { t: 'Recetas Electrónicas (e-Rx)', f: [
+    '<b>Recepción:</b> Médico envía receta vía FHIR / portal / PDF firmado',
+    '<b>Validación farmacéutica:</b> Dosis, interacciones, alergias, principio activo',
+    '<b>Control duplicados:</b> Detecta misma molécula en ventana corta (psicotrópicos)',
+    '<b>Cola de despacho:</b> Recetas listas aparecen en el POS de la sucursal seleccionada',
+    '<b>Equivalencias:</b> Si recetó marca y hay genérico, sugiere opción al cliente',
+    '<b>Historial paciente:</b> Tratamientos crónicos, alergias, contraindicaciones',
+    '<b>Reporte controlados:</b> Lista I-VI registradas para reporte regulatorio mensual',
+  ]},
+  cd: { t: 'Centro de Distribución', f: [
+    '<b>Recepción de laboratorios:</b> OC del ERP → escaneo → validación lote/venc → entrada',
+    '<b>Cadena de frío:</b> Refrigerados a nevera con sensor IoT. Validación de temperatura',
+    '<b>Picking:</b> Sucursales solicitan transferencia → ola de picking → escaneo confirma',
+    '<b>Packing:</b> Refrigerados en caja térmica con gel pack y sensor de viaje',
+    '<b>Despacho:</b> Camión a sucursales. Validación de temperatura al llegar',
+    '<b>Devoluciones:</b> Vencidos/dañados → cuarentena → reporte a laboratorio',
+  ]},
+  monitoreo: { t: 'Monitoreo de transacciones', f: [
+    '<b>Rechazadas:</b> ERP rechaza factura → alerta inmediata al POS y dashboard',
+    '<b>No procesadas:</b> Transacciones en cola que no se enviaron → flag automático',
+    '<b>Verificación:</b> Farmacéutico ve si alguna receta o venta no se registró',
+    '<b>Centralizado:</b> Dashboard con todas las pendientes/rechazadas de todas las sucursales',
+    '<b>Auditoría:</b> Log completo de cada intento, error, reintento',
+    '<b>Alertas:</b> Por tipo de error, sucursal, frecuencia. Escalamiento automático',
+  ]},
+  frio: { t: 'Cadena de Frío — IoT 24/7', f: [
+    '<b>Sensores:</b> Cada nevera con sensor IoT. Temperatura, humedad, apertura',
+    '<b>Rangos:</b> 2-8°C estándar. -20°C para vacunas que lo requieran',
+    '<b>Alertas:</b> Excursión térmica → SMS/WhatsApp/email + dashboard rojo',
+    '<b>Tolerancia:</b> Tiempo fuera de rango acumulado → bloqueo automático en POS',
+    '<b>Trazabilidad de viaje:</b> Cajas térmicas para delivery con sensor desechable',
+    '<b>Cumplimiento:</b> Logs auditables en caso de inspección sanitaria',
+    '<b>Productos críticos:</b> Insulina, vacunas, hormonas, oncológicos, biológicos',
+  ]},
+  mostrador: { t: 'Caja Mostrador', f: [
+    '<b>Hardware típico:</b> Terminal POS + impresora ticket + lector + cajón + pinpad',
+    '<b>Etiqueta posología:</b> Adhesivo con dosis, frecuencia, paciente por cada despacho',
+    '<b>Identificación cliente:</b> Por cédula, tarjeta de fidelización o app',
+    '<b>Flujo:</b> Receta/producto → escanea → consulta e-Rx → cobra → e-CF → ticket + posología',
+    '<b>Múltiples cajas:</b> Por sucursal según afluencia',
+  ]},
+  beauty: { t: 'Tablet Beauty / Dermo', f: [
+    '<b>Dispositivo móvil:</b> Tablet con app POS, escáner, opción impresora portátil',
+    '<b>Asesora dermo:</b> Atiende cliente en piso, recomendador, arma carrito',
+    '<b>Cierre en piso:</b> Cobra directo sin volver al mostrador',
+    '<b>Fidelización:</b> Identifica al cliente Carol App, acumula y redime puntos',
+    '<b>Sin receta:</b> OTC y dermo sin validación e-Rx, flujo simple',
+  ]},
+  drive: { t: 'Drive-thru / Express', f: [
+    '<b>Terminal con dual screen:</b> Pantalla cajero + pantalla cliente exterior',
+    '<b>Pre-validación:</b> Cliente envía receta por app → ya está pre-aprobada',
+    '<b>Drive-thru:</b> Llega → muestra QR → cajero confirma → entrega → cobra',
+    '<b>Express:</b> Compra rápida de OTC sin bajarse del carro',
+  ]},
+  rider: { t: 'Rider / Delivery', f: [
+    '<b>Hardware:</b> Móvil del rider + caja térmica con gel pack para refrigerados',
+    '<b>Pedido:</b> Cliente ordena en Carol App → sucursal arma → asignado a rider',
+    '<b>Cadena de frío:</b> Caja térmica con sensor de viaje',
+    '<b>Geolocalización:</b> Cliente ve ubicación del rider en tiempo real',
+    '<b>Prueba de entrega:</b> Foto + firma digital del receptor',
+    '<b>Pago:</b> Pre-pagado en app o pago al rider (efectivo/POS móvil)',
+    '<b>Controlados:</b> Validación de cédula al recibir',
+  ]},
+  ecf: { t: 'Facturación electrónica e-CF', f: [
+    '<b>Normal:</b> Venta → API proveedor → XML firmado X.509 → DGII → TrackID',
+    '<b>Tipos:</b> 31 Crédito Fiscal, 32 Consumo, 33/34 Notas, 44 Regímenes, 45 Gubernamental',
+    '<b>Offline:</b> Sin conexión → cola → al reconectar transmite. DGII permite 72h',
+    '<b>QR:</b> Cada ticket lleva QR de verificación. Reportes 606/607 automáticos',
+    '<b>Ley 32-23:</b> Plazo de cumplimiento obligatorio',
+  ]},
+  pagos: { t: 'Procesador de Pagos', f: [
+    '<b>Procesadores:</b> Azul, CardNet u otro según convenio comercial',
+    '<b>Flujo:</b> Pinpad → red local → procesador → banco → respuesta',
+    '<b>Conciliación:</b> POS descarga reporte diario. Alerta si hay discrepancias',
+    '<b>Cierre:</b> Conciliación cruzada con arqueo, envío al ERP',
+  ]},
+  cloud: { t: 'Cloud Hosting ERP', f: [
+    '<b>ERP en la nube:</b> Acceso vía VPN/HTTPS. API REST/OData a productos Orbit Labs',
+    '<b>Backup:</b> Snapshots automáticos. Sitio DR secundario',
+    '<b>Disponibilidad:</b> SLA 99.9%. Monitoreo activo',
+    '<b>Integración:</b> Conector estándar Orbit Labs ↔ ERP',
+  ]},
+};
+
+function tip(el, key) {
+  const d = tips[key];
+  if (!d) return;
+  const tt = document.getElementById('tooltip');
+  const r = el.getBoundingClientRect();
+  const cr = document.getElementById('canvas').getBoundingClientRect();
+
+  let html = '<h3>' + d.t + '</h3>';
+  d.f.forEach(f => html += '<div class="flow">' + f + '</div>');
+  tt.innerHTML = html;
+  tt.classList.add('show');
+
+  let left = r.right - cr.left + 16;
+  let top = r.top - cr.top;
+  if (left + 360 > 1700) left = r.left - cr.left - 376;
+  if (top + tt.offsetHeight > 1700) top = 1700 - tt.offsetHeight - 20;
+  if (top < 0) top = 0;
+
+  tt.style.left = left + 'px';
+  tt.style.top = top + 'px';
+}
+
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.node') && !e.target.closest('.tooltip')) {
+    document.getElementById('tooltip').classList.remove('show');
+  }
+});
+</script>
+</body>
+</html>
