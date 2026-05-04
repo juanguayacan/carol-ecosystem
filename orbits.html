@@ -111,7 +111,7 @@
       </marker>
     </defs>
 
-    <!-- ERP → Software ring (4 solid purple radial spokes) -->
+    <!-- ERP → Software ring (5 solid purple radial spokes — 4 diagonals + Contact Center north) -->
     <line x1="850" y1="850" x2="1048" y2="652" stroke="#7B6FF0"/>
     <line x1="850" y1="850" x2="1048" y2="652" stroke="#7B6FF0" class="glow"/>
     <line x1="850" y1="850" x2="1048" y2="1048" stroke="#7B6FF0"/>
@@ -120,6 +120,16 @@
     <line x1="850" y1="850" x2="652" y2="1048" stroke="#7B6FF0" class="glow"/>
     <line x1="850" y1="850" x2="652" y2="652" stroke="#7B6FF0"/>
     <line x1="850" y1="850" x2="652" y2="652" stroke="#7B6FF0" class="glow"/>
+    <line x1="850" y1="850" x2="850" y2="570" stroke="#7B6FF0"/>
+    <line x1="850" y1="850" x2="850" y2="570" stroke="#7B6FF0" class="glow"/>
+
+    <!-- Contact Center → Carol App, Fidelización, POS (lateral channel siblings) -->
+    <path d="M 850 570 Q 1000 580 1048 652" stroke="#7B6FF0" stroke-dasharray="3 3" fill="none" marker-end="url(#arr)" opacity="0.4"/>
+    <path d="M 850 570 Q 700 580 652 652" stroke="#7B6FF0" stroke-dasharray="3 3" fill="none" marker-end="url(#arr)" opacity="0.4"/>
+    <!-- Contact Center → Rider (delivery visibility) -->
+    <path d="M 760 570 Q 550 470 440 440" stroke="#7B6FF0" stroke-dasharray="3 3" fill="none" marker-end="url(#arr)" opacity="0.3"/>
+    <!-- Contact Center → e-Rx (escalation) -->
+    <line x1="850" y1="520" x2="850" y2="460" stroke="#7B6FF0" stroke-dasharray="3 3" marker-end="url(#arr)" opacity="0.5"/>
 
     <!-- ERP → Ops ring (4 dashed) -->
     <line x1="850" y1="850" x2="850" y2="410" stroke="#7B6FF0" stroke-dasharray="5 5" marker-end="url(#arr)"/>
@@ -174,7 +184,15 @@
     <div class="desc">Fuente única de verdad. Maestro de artículos, precios, lotes con vencimiento, clientes, contabilidad, OC, facturación.</div>
   </div>
 
-  <!-- ═══════════ RING 1 — SOFTWARE (R=280, diagonals) ═══════════ -->
+  <!-- ═══════════ RING 1 — SOFTWARE (R=280, 4 diagonals + 1 north) ═══════════ -->
+  <!-- Contact Center at 270° (N) -->
+  <div class="node orbit" style="top:520px;left:760px;width:180px;" onclick="tip(this,'cc')">
+    <div class="badge">Canal humano</div>
+    <div class="icon">CC</div>
+    <div class="name">Contact Center omnicanal</div>
+    <div class="desc">WhatsApp Business API + voz + chat + email. Bandeja unificada, vista 360° del cliente.</div>
+  </div>
+
   <!-- POS at 315° (NE) -->
   <div class="node orbit" style="top:602px;left:958px;width:180px;" onclick="tip(this,'pos')">
     <div class="badge">Core</div>
@@ -329,6 +347,18 @@ const tips = {
     '<b>Fidelización integrada:</b> Identifica cliente → acumula puntos → redime → aplica promos',
     '<b>Lectura medicamento:</b> Lector decodifica → POS valida vs ERP → cobra y descuenta lote exacto',
     '<b>Offline:</b> Base local → sigue vendiendo → cola sync → al reconectar envía al ERP',
+  ]},
+  cc: { t: 'Contact Center omnicanal — canal humano', f: [
+    '<b>Canales:</b> WhatsApp Business API + voz + chat web + email + redes',
+    '<b>Bandeja unificada:</b> Agente ve todas las conversaciones en una pantalla',
+    '<b>Vista 360°:</b> Fidelización, recetas activas, última compra, estado de delivery, crónicos',
+    '<b>Toma pedidos:</b> Agente crea pedidos que entran al POS y se asignan a sucursal',
+    '<b>Escala recetas:</b> Recibe receta del cliente → cola e-Rx para validación',
+    '<b>Stock en tiempo real:</b> Consulta por sucursal, sugiere alternativa más cercana',
+    '<b>Delivery:</b> Visibilidad del rider, ubicación, gestiona reclamos',
+    '<b>WhatsApp Business API:</b> Múltiples agentes, plantillas Meta, automatizaciones',
+    '<b>Bot híbrido:</b> Bot resuelve simples (horarios, sucursales) y escala a humano',
+    '<b>Métricas:</b> Tiempo primera respuesta, AHT, CSAT, NPS, conversión a venta',
   ]},
   app: { t: 'Carol App + Web', f: [
     '<b>Catálogo:</b> Mismo maestro del ERP. Producto en sucursal = producto en app',

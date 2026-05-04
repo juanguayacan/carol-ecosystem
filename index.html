@@ -102,15 +102,17 @@
       </marker>
     </defs>
 
-    <!-- ERP to Orbit products (solid) -->
-    <line x1="700" y1="330" x2="250" y2="510" stroke="#7B6FF0" marker-end="url(#arr)"/>
-    <line x1="700" y1="330" x2="250" y2="510" stroke="#7B6FF0" class="glow"/>
-    <line x1="700" y1="330" x2="600" y2="510" stroke="#7B6FF0" marker-end="url(#arr)"/>
-    <line x1="700" y1="330" x2="600" y2="510" stroke="#7B6FF0" class="glow"/>
-    <line x1="700" y1="330" x2="950" y2="510" stroke="#7B6FF0" marker-end="url(#arr)"/>
-    <line x1="700" y1="330" x2="950" y2="510" stroke="#7B6FF0" class="glow"/>
-    <line x1="700" y1="330" x2="1200" y2="510" stroke="#7B6FF0" marker-end="url(#arr)"/>
-    <line x1="700" y1="330" x2="1200" y2="510" stroke="#7B6FF0" class="glow"/>
+    <!-- ERP to Orbit products (5 solid radial spokes) -->
+    <line x1="700" y1="330" x2="160" y2="510" stroke="#7B6FF0" marker-end="url(#arr)"/>
+    <line x1="700" y1="330" x2="160" y2="510" stroke="#7B6FF0" class="glow"/>
+    <line x1="700" y1="330" x2="410" y2="510" stroke="#7B6FF0" marker-end="url(#arr)"/>
+    <line x1="700" y1="330" x2="410" y2="510" stroke="#7B6FF0" class="glow"/>
+    <line x1="700" y1="330" x2="660" y2="510" stroke="#7B6FF0" marker-end="url(#arr)"/>
+    <line x1="700" y1="330" x2="660" y2="510" stroke="#7B6FF0" class="glow"/>
+    <line x1="700" y1="330" x2="910" y2="510" stroke="#7B6FF0" marker-end="url(#arr)"/>
+    <line x1="700" y1="330" x2="910" y2="510" stroke="#7B6FF0" class="glow"/>
+    <line x1="700" y1="330" x2="1160" y2="510" stroke="#7B6FF0" marker-end="url(#arr)"/>
+    <line x1="700" y1="330" x2="1160" y2="510" stroke="#7B6FF0" class="glow"/>
 
     <!-- ERP to e-Rx -->
     <line x1="700" y1="330" x2="250" y2="730" stroke="#7B6FF0" stroke-dasharray="4 4" marker-end="url(#arr)"/>
@@ -125,7 +127,7 @@
     <line x1="700" y1="330" x2="1200" y2="730" stroke="#2896B4" stroke-dasharray="4 4" marker-end="url(#arr)"/>
 
     <!-- e-Rx to POS -->
-    <line x1="300" y1="730" x2="300" y2="630" stroke="#7B6FF0" stroke-dasharray="3 3" marker-end="url(#arr)" opacity="0.5"/>
+    <line x1="235" y1="730" x2="160" y2="630" stroke="#7B6FF0" stroke-dasharray="3 3" marker-end="url(#arr)" opacity="0.5"/>
 
     <!-- CD to Hardware (transferencias) -->
     <line x1="600" y1="870" x2="180" y2="1060" stroke="#0F6E56" stroke-dasharray="4 4" marker-end="url(#arr)" opacity="0.4"/>
@@ -136,23 +138,30 @@
     <line x1="1200" y1="730" x2="700" y2="870" stroke="#2896B4" stroke-dasharray="4 4" marker-end="url(#arr)" opacity="0.4"/>
 
     <!-- POS to Hardware -->
-    <line x1="250" y1="630" x2="180" y2="1060" stroke="#0F6E56" marker-end="url(#arr)"/>
-    <line x1="250" y1="630" x2="500" y2="1060" stroke="#0F6E56" marker-end="url(#arr)"/>
-    <line x1="250" y1="630" x2="830" y2="1060" stroke="#0F6E56" marker-end="url(#arr)"/>
-    <line x1="250" y1="630" x2="1150" y2="1060" stroke="#0F6E56" marker-end="url(#arr)"/>
+    <line x1="160" y1="630" x2="180" y2="1060" stroke="#0F6E56" marker-end="url(#arr)"/>
+    <line x1="160" y1="630" x2="500" y2="1060" stroke="#0F6E56" marker-end="url(#arr)"/>
+    <line x1="160" y1="630" x2="830" y2="1060" stroke="#0F6E56" marker-end="url(#arr)"/>
+    <line x1="160" y1="630" x2="1150" y2="1060" stroke="#0F6E56" marker-end="url(#arr)"/>
 
     <!-- POS to Externos -->
-    <line x1="250" y1="630" x2="370" y2="1340" stroke="#993C1D" stroke-dasharray="4 4" marker-end="url(#arr)"/>
-    <line x1="250" y1="630" x2="700" y2="1340" stroke="#993C1D" stroke-dasharray="4 4" marker-end="url(#arr)"/>
+    <line x1="160" y1="630" x2="370" y2="1340" stroke="#993C1D" stroke-dasharray="4 4" marker-end="url(#arr)"/>
+    <line x1="160" y1="630" x2="700" y2="1340" stroke="#993C1D" stroke-dasharray="4 4" marker-end="url(#arr)"/>
+
+    <!-- Contact Center → Carol App + Fidelización + Rider (channel agent) -->
+    <line x1="660" y1="510" x2="410" y2="510" stroke="#7B6FF0" stroke-dasharray="3 3" marker-end="url(#arr)" opacity="0.4"/>
+    <line x1="660" y1="510" x2="910" y2="510" stroke="#7B6FF0" stroke-dasharray="3 3" marker-end="url(#arr)" opacity="0.4"/>
+    <path d="M 660 610 Q 660 850 1150 1060" stroke="#7B6FF0" stroke-dasharray="4 4" fill="none" marker-end="url(#arr)" opacity="0.3"/>
+    <!-- Contact Center → e-Rx -->
+    <line x1="660" y1="610" x2="235" y2="700" stroke="#7B6FF0" stroke-dasharray="3 3" marker-end="url(#arr)" opacity="0.4"/>
 
     <!-- ERP to Cloud -->
     <line x1="700" y1="330" x2="1030" y2="1340" stroke="#993C1D" stroke-dasharray="6 4" marker-end="url(#arr)" opacity="0.3"/>
 
-    <!-- Fidelización to POS (puntos bidirectional) -->
-    <line x1="1200" y1="570" x2="350" y2="570" stroke="#7B6FF0" stroke-dasharray="4 4" marker-end="url(#arr)" opacity="0.3"/>
+    <!-- Fidelización to POS (puntos bidirectional, arc above row) -->
+    <path d="M 910 480 Q 535 380 220 480" stroke="#7B6FF0" stroke-dasharray="4 4" fill="none" marker-end="url(#arr)" opacity="0.3"/>
 
     <!-- Carol App to ERP -->
-    <line x1="600" y1="510" x2="700" y2="330" stroke="#7B6FF0" stroke-dasharray="4 4" marker-end="url(#arr)" opacity="0.2"/>
+    <line x1="410" y1="510" x2="700" y2="330" stroke="#7B6FF0" stroke-dasharray="4 4" marker-end="url(#arr)" opacity="0.2"/>
 
     <!-- Cold chain to Rider -->
     <line x1="1200" y1="870" x2="1150" y2="1060" stroke="#2896B4" stroke-dasharray="4 4" marker-end="url(#arr)" opacity="0.4"/>
@@ -179,32 +188,39 @@
   </div>
 
   <!-- ═══════════ ORBIT LABS SOFTWARE ═══════════ -->
-  <div class="node orbit" style="top:480px;left:120px;width:230px;" onclick="tip(this,'pos')">
+  <div class="node orbit" style="top:480px;left:50px;width:220px;" onclick="tip(this,'pos')">
     <div class="badge">Core</div>
     <div class="icon">POS</div>
     <div class="name">POS Farmacia multi-modo</div>
-    <div class="desc">Mostrador, OTC/conveniencia, recetas controladas, beauty/dermo, drive-thru. Lectura de receta digital, e-CF, lectura de código del medicamento, programa de fidelización integrado. Modo offline con cola de sync.</div>
+    <div class="desc">Mostrador, OTC, controlados, beauty/dermo, drive-thru. Lectura de receta, e-CF, código del medicamento, fidelización integrada, offline con cola.</div>
   </div>
 
-  <div class="node orbit" style="top:480px;left:470px;width:220px;" onclick="tip(this,'app')">
-    <div class="badge">Digital</div>
+  <div class="node orbit" style="top:480px;left:300px;width:220px;" onclick="tip(this,'app')">
+    <div class="badge">Canal digital</div>
     <div class="icon">APP</div>
     <div class="name">Carol App + Web</div>
-    <div class="desc">App móvil + farmaciascarol.com + WhatsApp. Catálogo del ERP, stock unificado, recetas digitales, historial, recordatorios de medicación, tarjeta digital de fidelización.</div>
+    <div class="desc">App móvil + farmaciascarol.com + WhatsApp self-service. Catálogo, stock, recetas digitales, historial, recordatorios, tarjeta de puntos.</div>
   </div>
 
-  <div class="node orbit" style="top:480px;left:820px;width:220px;" onclick="tip(this,'pt')">
-    <div class="badge">Inventario</div>
-    <div class="icon">PT</div>
-    <div class="name">PharmaTrack</div>
-    <div class="desc">Inventario farmacéutico. Lotes con FEFO, vencimientos, recepciones de laboratorios, transferencias entre sucursales, cycle counts, controlados (Lista I-VI), reporte regulatorio.</div>
+  <div class="node orbit" style="top:480px;left:550px;width:220px;" onclick="tip(this,'cc')">
+    <div class="badge">Canal humano</div>
+    <div class="icon">CC</div>
+    <div class="name">Contact Center omnicanal</div>
+    <div class="desc">WhatsApp Business API + voz + chat web + email en una sola bandeja del agente. Vista 360° del cliente, toma pedidos, escala recetas, consulta stock.</div>
   </div>
 
-  <div class="node orbit" style="top:480px;left:1100px;width:220px;" onclick="tip(this,'fid')">
+  <div class="node orbit" style="top:480px;left:800px;width:220px;" onclick="tip(this,'fid')">
     <div class="badge">Cliente B2C</div>
     <div class="icon">FID</div>
     <div class="name">Plataforma de Fidelización</div>
-    <div class="desc">Programa de puntos Carol. Niveles de cliente, promociones segmentadas, cumpleaños, recordatorios, redención en mostrador o app. CRM con historial de compra y comportamiento.</div>
+    <div class="desc">Programa de puntos Carol. Niveles, promociones segmentadas, cumpleaños, recordatorios de refill, CRM con historial y comportamiento.</div>
+  </div>
+
+  <div class="node orbit" style="top:480px;left:1050px;width:220px;" onclick="tip(this,'pt')">
+    <div class="badge">Inventario</div>
+    <div class="icon">PT</div>
+    <div class="name">PharmaTrack</div>
+    <div class="desc">Inventario farmacéutico. Lotes con FEFO, vencimientos, recepciones, transferencias, cycle counts, controlados Lista I-VI, reporte regulatorio.</div>
   </div>
 
   <!-- ═══════════ OPERACIONES & DESPACHO ═══════════ -->
@@ -300,6 +316,7 @@ const tips = {
     '<b>→ POS:</b> Maestro de artículos, precios, listas de precios, clientes, lotes con vencimiento',
     '<b>→ PharmaTrack:</b> Lotes, FEFO, warehouses por sucursal, controlados',
     '<b>→ Carol App:</b> Mismo catálogo del ERP, mismo stock por warehouse',
+    '<b>→ Contact Center:</b> Datos de cliente, stock por sucursal, historial de pedidos para el agente',
     '<b>→ e-Rx:</b> Catálogo de medicamentos válidos, equivalencias, principios activos',
     '<b>→ Centro de Distribución:</b> Órdenes de compra a laboratorios, transferencias a sucursales',
     '<b>→ Fidelización:</b> Maestro de clientes, historial de compra para segmentación',
@@ -320,6 +337,18 @@ const tips = {
     '<b>Lectura de medicamento:</b> Lector decodifica código → POS valida vs ERP → cobra y descuenta el lote exacto',
     '<b>Offline:</b> Base local → sigue vendiendo → cola sync → al reconectar envía al ERP',
     '<b>Cierre:</b> Arqueo → conciliación con procesador → envío automático al ERP → reportes',
+  ]},
+  cc: { t: 'Contact Center omnicanal — canal humano', f: [
+    '<b>Canales:</b> WhatsApp Business API + voz + chat web en farmaciascarol.com + email + redes',
+    '<b>Bandeja unificada:</b> El agente ve todas las conversaciones en una pantalla, sin saltar entre apps',
+    '<b>Vista 360° del cliente:</b> Programa de fidelización, recetas activas, última compra, estado de delivery, tratamientos crónicos',
+    '<b>Toma de pedidos:</b> El agente puede crear pedidos que entran al POS como cualquier canal y se asignan a sucursal',
+    '<b>Escalamiento de recetas:</b> Recibe receta del cliente → la envía a la cola e-Rx para validación farmacéutica',
+    '<b>Consulta de stock:</b> En tiempo real por sucursal, recomienda alternativa más cercana si no hay',
+    '<b>Delivery:</b> Visibilidad del rider, ubicación en tiempo real, confirma entregas, gestiona reclamos',
+    '<b>WhatsApp Business API:</b> Múltiples agentes simultáneos, plantillas aprobadas por Meta, automatizaciones, métricas',
+    '<b>Métricas:</b> Tiempo de primera respuesta, AHT, CSAT, NPS, conversión a venta',
+    '<b>Bot + agente híbrido:</b> Bot resuelve consultas simples (horarios, sucursales) y escala a humano cuando hace falta',
   ]},
   app: { t: 'Carol App + Web — canal digital', f: [
     '<b>Catálogo:</b> Mismo maestro del ERP. Producto en sucursal = producto en app',
